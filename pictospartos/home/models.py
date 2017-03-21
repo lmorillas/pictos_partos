@@ -39,3 +39,11 @@ class Pictograma(models.Model):
         ImageChooserPanel('image'),
         FieldPanel('descripcion'),
     ]
+
+class Linea(models.Model):
+	pass
+
+
+class Pagina(Page):
+	titulo = models.CharField("Título de la página", max_length=254, blank=True)
+	linea = Linea()

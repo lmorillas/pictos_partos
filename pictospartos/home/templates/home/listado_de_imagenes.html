@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags static %}
+
+
+{% block body_class %}{% endblock %}
+
+{% block body %}
+<div class="container">
+<div class="col-xs-8">
+    <h1 class="text-center">{{ page.title }}</h1>
+</div>
+<div class="col-xs-4">
+ {% include "search_box.html" only %}
+</div>
+</div>
+<div class="container">
+{% for picto in resources %}
+<div class="col-xs-2">
+	 {% image picto width-200 class="img img-responsive thumbnail" %}
+</div>
+    
+{% endfor %}
+</div>
+<div class="container">
+<div class="row">
+<ul class="pagination center-block">
+  {% if resources.has_previous %}
+    <li><a href="?page={{ resources.previous_page_number }}"><i class="fa fa-angle-left"></i></a></li>
+  {% endif %}
+  {% for page_num in resources.paginator.page_range %}
+    <li {% if page_num == resources.number %}class="active"{% endif %}><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+  {% endfor %}
+  <li><a href="?page={{ resources.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
+</ul>
+
+</div>
+</div>
+
+{% endblock %}
+
+

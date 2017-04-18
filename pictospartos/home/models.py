@@ -7,23 +7,54 @@ from django.db import models
 from wagtail.wagtailcore.models import Page
 
 from wagtail.wagtailadmin.edit_handlers import (
-    FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, StreamFieldPanel,
+    FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, 
+    StreamFieldPanel,
 )
 
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wagtail.wagtailimages.models import Image
 
+from modelcluster.fields import ParentalKey
+
+from wagtail.wagtailcore.fields import RichTextField, StreamField
+from wagtail.wagtailcore.models import Orderable, ClusterableModel
+
+from wagtail.wagtailimages.models import Image
+
+from .blocks import LineaBlock,ContenidoBlock
+
+
+
 class HomePage(Page):
     pass
 
+class PaginaPictos(Page):
+    subtitulo = models.CharField("Subtítulo de la página", max_length=254, blank=True, 
+        help_text="Texto que puede aparecer debajo del título de la página")
+    lineas = StreamField(ContenidoBlock(), blank=True, verbose_name="Líneas")
 
+    content_panels = Page.content_panels + [
+        FieldPanel('subtitulo', classname="full"),
+        StreamFieldPanel('lineas'),
+    ]
+
+'''
+class Linea(Page):
+    page = ParentalKey(PaginaPictos, related_name='linea_pictos')
+    titulo = models.CharField("Título bloque", max_length=254, blank=True)
+
+    content_panels = [
+        FieldPanel('titulo', classname="full"),
+        InlinePanel('picto_relacionado', label="Picto"),
+    ]
 
 class Pictograma(models.Model):
     """
 
     """
-    nombre = models.CharField("Nombre del picto", max_length=254, blank=True)
+    page = ParentalKey(Linea, related_name='picto_relacionado')
+    nombre = models.CharField("Nombre del picto", max_length=64, blank=True)
     picto = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -36,25 +67,18 @@ class Pictograma(models.Model):
     	help_text="descripción del picto",
         blank=True)
 
-    content_panels = Page.content_panels + [
-        FieldPanel('introduction', classname="full"),
-        ImageChooserPanel('image'),
+    panels = [
+        FieldPanel('nombre', classname="full"),
+        ImageChooserPanel('picto'),
         FieldPanel('descripcion'),
     ]
+'''
 
-class Linea(models.Model):
-	pass
-
-class Seccion (Page):
-    pass
-
-
+'''
 class Pagina(Page):
 	titulo = models.CharField("Título de la página", max_length=254, blank=True)
-	linea = Linea()
-
-
-from wagtail.wagtailimages.models import Image
+	
+'''
 
 class ListadoDeImagenes(Page):
     titulo = models.CharField("Título de la página", max_length=254, blank=True)
@@ -81,3 +105,4 @@ class ListadoDeImagenes(Page):
         context['resources'] = resources
 
         return context
+

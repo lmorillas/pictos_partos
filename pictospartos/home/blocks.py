@@ -1,7 +1,7 @@
 from wagtail.wagtailimages.blocks import ImageChooserBlock
 from wagtail.wagtailembeds.blocks import EmbedBlock
 from wagtail.wagtailcore.blocks import (
-    CharBlock, ChoiceBlock, RichTextBlock, StreamBlock, StructBlock, TextBlock,
+    CharBlock, ChoiceBlock, ListBlock, RichTextBlock, StreamBlock, StructBlock, TextBlock,
 )
 
 
@@ -17,7 +17,7 @@ class PictoBlock(StructBlock):
 
     class Meta:
         icon = 'image'
-        template = "blocks/image_block.html"
+        template = "blocks/picto_block.html"
 
 
 class HeadingBlock(StructBlock):
@@ -70,7 +70,20 @@ class BaseStreamBlock(StreamBlock):
 class LineaBlock(StreamBlock):
     encabezado = CharBlock(classname="title", required=True, label="Línea de encabezado",
         icon="title")
-    picto = PictoBlock()
+    pictos = PictoBlock()
+    class Meta:
+        icon = 'grip'
+        #template = "blocks/picto_block.html"
 
 class ContenidoBlock(StreamBlock):
-    contenido = LineaBlock()
+    lineas = LineaBlock()
+
+
+
+class Linea2Block(StreamBlock):
+    encabezado = CharBlock(classname="title", required=True, label="Línea de encabezado",
+        icon="title")
+    pictos = ListBlock(PictoBlock())
+    class Meta:
+        icon = 'grip'
+        #template = "blocks/picto_block.html"

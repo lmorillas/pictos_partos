@@ -22,7 +22,12 @@ from wagtail.wagtailcore.models import Orderable, ClusterableModel
 
 from wagtail.wagtailimages.models import Image
 
-from .blocks import LineaBlock,ContenidoBlock
+from wagtail.wagtailcore.blocks import (
+    CharBlock, ChoiceBlock, ListBlock, RichTextBlock, StreamBlock, StructBlock, TextBlock,
+)
+
+from .blocks import LineaBlock,ContenidoBlock, Linea2Block
+
 
 
 
@@ -32,7 +37,30 @@ class HomePage(Page):
 class PaginaPictos(Page):
     subtitulo = models.CharField("Subtítulo de la página", max_length=254, blank=True, 
         help_text="Texto que puede aparecer debajo del título de la página")
+    lineas1 = StreamField(LineaBlock(), blank=True, verbose_name="Líneas")
+
+    content_panels = Page.content_panels + [
+        FieldPanel('subtitulo', classname="full"),
+        StreamFieldPanel('lineas1'),
+    ]
+
+class Pagina2Pictos(Page):
+    subtitulo = models.CharField("Subtítulo de la página", max_length=254, blank=True, 
+        help_text="Texto que puede aparecer debajo del título de la página")
     lineas = StreamField(ContenidoBlock(), blank=True, verbose_name="Líneas")
+
+    content_panels = Page.content_panels + [
+        FieldPanel('subtitulo', classname="full"),
+        StreamFieldPanel('lineas'),
+    ]
+
+
+class Pagina3Pictos(Page):
+    subtitulo = models.CharField("Subtítulo de la página", max_length=254, blank=True, 
+        help_text="Texto que puede aparecer debajo del título de la página")
+    #lineas = ListBlock StreamField(Linea2Block(), blank=True, verbose_name="Líneas")
+
+    lineas = StreamField(Linea2Block())
 
     content_panels = Page.content_panels + [
         FieldPanel('subtitulo', classname="full"),
@@ -105,4 +133,8 @@ class ListadoDeImagenes(Page):
         context['resources'] = resources
 
         return context
+
+
+
+
 

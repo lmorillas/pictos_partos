@@ -2,16 +2,17 @@
 {% load  wagtailuserbar  static wagtailimages_tags %}
 
 {% endspaceless %}<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block htitle %}{% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
     <link href="https://fonts.googleapis.com/css?family=Dosis:400,700|Nunito|Open+Sans:300,400" rel="stylesheet">
     <link href="{% static "css/font-awesome.css" %}" rel="stylesheet">
-    <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
-    <link href="{% static "css/picotspartos.css" %}" rel="stylesheet">
+    <link href="{% static "css/pictospartos.css" %}" rel="stylesheet">
     
     <meta name="theme-color" content="#ffffff">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -25,29 +26,11 @@
 </head>
 <body class="{% block body_class %}{% endblock %}">
 {% wagtailuserbar "bottom-left" %}
-<header>
-    <div id="header">
-        <div class="container">
-            <div class="col-lg-9 col-md-9 col-md-offset-3 col-sm-12 col-xs-12" id="menu">
-                <nav class="navbar">
-                    <div class="container-fluid">
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                        </div>
-                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                            
-                        </div>
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+
+{% block header %}
+    {# Header contains the main_navigation block #}
+    {% include "includes/header.html" with parent=site_root calling_page=self %}
+{% endblock header %}
 
 {% block body %}
 {% endblock %}
@@ -57,27 +40,25 @@
     <div id="footer">
         <div class="container">
         <div class="row">
-            <div class="col-md-2 col-xs-12">
+            <div class="col-md-2 col-12">
                  
 
             </div>
-            <div class="col-md-8 col-xs-12 text-center">
+            <div class="col-md-8 col-12 text-center">
                 <address>
                  
                 </address>
             </div>
-            <div class="col-md-2 col-xs-12">
+            <div class="col-md-2 col-12">
                 
             </div>
         </div>
         </div>
     </div>
 </footer>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="{% static "js/bootstrap.js" %}"></script>
-<script src="{% static "js/retina.min.js" %}"></script>
-<script src="{% static "js/jquery.sticky.js" %}"></script>
-<script src="{% static "js/jquery.stellar.js" %}"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 {% block extra_script %}{% endblock %}
 </body>
 </html>

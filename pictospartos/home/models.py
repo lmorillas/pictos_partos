@@ -26,13 +26,19 @@ from wagtail.wagtailcore.blocks import (
     CharBlock, ChoiceBlock, ListBlock, RichTextBlock, StreamBlock, StructBlock, TextBlock,
 )
 
-from .blocks import LineaBlock,ContenidoBlock, Linea2Block
+from .blocks import LineaBlock,ContenidoBlock, Linea2Block, CarouselBlock
+
 
 
 
 
 class HomePage(Page):
-    pass
+    carousel = StreamField(CarouselBlock(), null=True, blank=True)
+    content_panels = Page.content_panels + [
+        StreamFieldPanel('carousel'),
+    ]
+
+
 
 class PaginaPictos(Page):
     subtitulo = models.CharField("Subtítulo de la página", max_length=254, blank=True, 
@@ -60,11 +66,13 @@ class Pagina3Pictos(Page):
         help_text="Texto que puede aparecer debajo del título de la página")
     #lineas = ListBlock StreamField(Linea2Block(), blank=True, verbose_name="Líneas")
 
-    lineas = StreamField(Linea2Block())
-
+    contenido = StreamField(Linea2Block(), null=True,blank=True,
+        help_text="Líneas de pictos que aparecen en la página",
+        verbose_name="Líneas de pictos",)
+    
     content_panels = Page.content_panels + [
         FieldPanel('subtitulo', classname="full"),
-        StreamFieldPanel('lineas'),
+        StreamFieldPanel('contenido'),
     ]
 
 '''

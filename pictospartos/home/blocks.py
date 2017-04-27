@@ -86,4 +86,13 @@ class Linea2Block(StreamBlock):
     pictos = ListBlock(PictoBlock())
     class Meta:
         icon = 'grip'
-        #template = "blocks/picto_block.html"
+        template = "blocks/fila_pictos.html"
+
+
+class CarouselBlock(StreamBlock):
+    image = ImageChooserBlock()
+    
+
+    class Meta:
+        icon='cogs'
+        template = "blocks/carousel.html"

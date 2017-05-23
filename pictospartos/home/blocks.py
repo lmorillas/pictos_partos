@@ -10,10 +10,11 @@ class PictoBlock(StructBlock):
     Custom `StructBlock` for utilizing images with associated caption and
     attribution data
     """
-    imagen = ImageChooserBlock(required=True)
-    texto = CharBlock(required=False)
-    attribucion = CharBlock(required=False)
-    descripcion = RichTextBlock(required=False)
+    imagen = ImageChooserBlock(required=True, help_text='Selecciona el picto')
+    texto = CharBlock(required=False, help_text='Texto que puede acompañar a la imagen')
+    #attribucion = CharBlock(required=False)
+    descripcion = RichTextBlock(required=False,
+        help_text="Notas sobre el uso de la imagen")
 
     class Meta:
         icon = 'image'

@@ -1,0 +1,21 @@
+{% load wagtailimages_tags %}
+{% load wagtailcore_tags %}
+
+ {% for block in page.contenido %}
+ <div class="container">
+ <div class="row justify-content-around">
+ {% if block.block_type == 'encabezado' %}
+             <h2 class="text-center">{{ block.value }}</h2>
+
+        {% else %}
+            {% for imagen in block.value %}
+            <div class="col-md-3 col-6">
+            {% include_block imagen %}
+            </div>
+            {% endfor%}
+        
+{% endif %}
+</div>
+</div>
+{% endfor %}
+

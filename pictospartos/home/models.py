@@ -27,9 +27,11 @@ from wagtail.wagtailcore.blocks import (
 )
 
 from .blocks import LineaBlock,ContenidoBlock, Linea2Block, CarouselBlock
+from wagtail.wagtailsnippets.models import register_snippet
+from modelcluster.fields import ParentalManyToManyField
 
-
-
+from .choices import CUADERNOS
+from django import forms
 
 
 class HomePage(Page):
@@ -41,13 +43,35 @@ class HomePage(Page):
 
 
 class PaginaPictos(Page):
+    cuaderno = ParentalManyToManyField('Cuaderno', blank=True,
+        help_text="Selecciona el cuaderno o cuadernos en que debe de aparecer")
+
     subtitulo = models.CharField("Subtítulo de la página", max_length=254, blank=True, 
         help_text="Texto que puede aparecer debajo del título de la página")
-    lineas1 = StreamField(LineaBlock(), blank=True, verbose_name="Líneas")
+    linea1 = StreamField(LineaBlock(), blank=True, verbose_name="Primera fila de pictos",
+        help_text="Primera línea de la página")
+
+    linea2 = StreamField(LineaBlock(), blank=True, verbose_name="Segunda fila de pictos",
+        help_text="Segunda línea de la página")
+
+    linea3 = StreamField(LineaBlock(), blank=True, verbose_name="Tercera fila de pictos",
+            help_text="Tercera línea de la página")
 
     content_panels = Page.content_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel(
+                    'cuaderno',
+                    widget=forms.CheckboxSelectMultiple,
+                ),
+            ],
+            heading="Cuadernos",
+            classname="collapsible collapsed"
+        ),
         FieldPanel('subtitulo', classname="full"),
-        StreamFieldPanel('lineas1'),
+        StreamFieldPanel('linea1', classname="full"),
+        StreamFieldPanel('linea2', classname="full"),
+        StreamFieldPanel('linea3', classname="full"),
     ]
 
 class Pagina2Pictos(Page):
@@ -146,3 +170,23 @@ class ListadoDeImagenes(Page):
 
 
 
+@register_snippet
+class Cuaderno(models.Model):
+    """
+    Standard Django model that is displayed as a snippet within the admin due
+    to the `@register_snippet` decorator. We use a new piece of functionality
+    available to Wagtail called the ParentalManyToManyField on the BreadPage
+    model to display this. The Wagtail Docs give a slightly more detailed example
+    http://docs.wagtail.io/en/latest/getting_started/tutorial.html#categories
+    """
+    nombre = models.CharField(max_length=255)
+
+    panels = [
+        FieldPanel('nombre'),
+    ]
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name_plural = 'Cuadernos'

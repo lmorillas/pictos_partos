@@ -1,0 +1,23 @@
+{% load wagtailimages_tags %}
+
+
+<div id="carousel-pictos" class="carousel slide" data-ride="carousel">
+  <div class="carousel-inner" role="listbox">
+    
+  
+{% for block in carousel %}
+ <div class="carousel-item {% if  forloop.first %} active {% endif %}">
+ 		{% image block.value width-200 class="d-block img-fluid"  id="block.value" %}
+</div>
+
+{% endfor %}
+</div>
+<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>

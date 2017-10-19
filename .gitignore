@@ -1,6 +1,0 @@
-env
-*pyc
-pictospartos/db.*
-pictospartos/media/images/*
-private
-

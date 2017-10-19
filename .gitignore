@@ -1,0 +1,11 @@
+env
+tmp
+db.*
+*pyc
+*bak
+*~
+data.py
+production.py
+.vscode
+__pycache__
+migrations

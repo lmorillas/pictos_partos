@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags static %}
+
+
+{% block body_class %}{% endblock %}
+
+{% block content %}
+<style>
+.pictolinea {
+  display: flex;
+  justify-content: space-between;
+}
+.pictolinea img {
+  
+}
+
+</style>
+
+<div class="container">
+<div class="col-12">
+    <h1 class="text-center">{{ page.title }} 
+      <a href="?format=pdf"><i class="pull-right fa fa-file-pdf-o" aria-hidden="true"></i></a></h1>
+    
+</div>
+
+<br>
+
+
+{% include "includes/lineapictos.html" with titulo=page.tit1 linea=page.linea1.all  %}
+
+{% include "includes/lineapictos.html" with titulo=page.tit2 linea=page.linea2.all  %}
+
+{% include "includes/lineapictos.html" with titulo=page.tit3 linea=page.linea3.all  %}
+
+{% include "includes/lineapictos.html" with titulo=page.tit4 linea=page.linea4.all  %}
+
+</div>
+
+{% endblock %}
+
+

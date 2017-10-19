@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load wagtailimages_tags wagtailcore_tags %}
+
+
+
+{% block content %}
+<div class="container-fluid">
+<div class="col-md-3 col-12">
+ {% include "includes/carousel.html" with carousel_items=page.carousel  %}
+
+</div>
+<div class="col-md-9 col-12">
+<div class="container-fluid " >
+    
+    <div class="container">
+        <div class="row">
+            
+                <h1>Pictos para la comunicación</h1>
+                <p class="lead"></p>
+                <a href="" class="hero-cta-link hvr-icon-forward">
+                    
+                </a>
+<div class="col-md-6">
+                <h2>Páginas elaboradas</h2>
+<ul>
+                {% for p in paginas %}
+
+    <li><a href="{% pageurl p %}">{{p.title}}</a></li>
+                    {% endfor %}
+</ul>
+            </div>
+            <div class="col-md-6">
+            <h2>Colaborar</h2>
+    <p><a href="/admin/pages/add/home/paginadepictos/3/"><i class="fa fa-plus-square" aria-hidden="true"></i> Añadir más páginas</a>    </p>
+    </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+    
+{% endblock %}
+
+

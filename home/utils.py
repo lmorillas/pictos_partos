@@ -72,10 +72,12 @@ class Documento(object):
             _pagesize = A4
 
         self.src = []
+        '''
         self.author = 'Matronas y TCAE del H.U.Miguel Servet. Zaragoza'
-        self.subject('Pictopartos')
-        self.creator('https://pictopartos.es')
-        self.eywords(['pictos', 'matronas', 'auxiliares', 'partos', 'arasaac', 'HUMS', 'TCAE'])
+        self.subject = 'Pictopartos'
+        self.creator = 'https://pictopartos.es'
+        self.keywords = ['pictos', 'matronas', 'auxiliares', 'partos', 'arasaac', 'HUMS', 'TCAE']
+        '''
 
         self.doc = SimpleDocTemplate(fichero, pagesize=_pagesize, 
             rightMargin=2*cm,leftMargin=1.5*cm,  topMargin=15 ,bottomMargin=15,
@@ -265,7 +267,8 @@ class Documento(object):
     @staticmethod
     def _vheader(canvas, doc, titulo, logo1=None, logo2=None):
         # Save the state of our canvas so we can draw on it
-        canvas.setStrokeColor(lightgreen)
+        #canvas.setStrokeColor(lightgreen)
+        canvas.setPageCompression(1)
         #canvas.setStrokeColorCMYK(1, 31, 0, 0)
         #canvas.setStrokeColorRGB(0, 0.7333333333333333, 0.6549019607843137 , 0.7)
         canvas.setStrokeColor(naranja)

@@ -132,11 +132,19 @@ def crea_linea(linea):
     #print(_datos)
     return _datos
 
+def limpia_punto(cadena):
+    cadena = cadena.strip()
+    if cadena.endswith('.'):
+        return cadena[:-1]
+    else:
+        return cadena
+
 def generar_pdf(hoja):
     buffer = BytesIO()
     fuentes()
     doc = Documento(fichero=buffer)
-    doc.titulo = hoja.title
+    doc.titulo = limpia_punto(hoja.title)
+    
     linea1 = hoja.linea1.all()
     linea2 = hoja.linea2.all()
     linea3 = hoja.linea3.all()
@@ -167,13 +175,12 @@ def generar_pdf(hoja):
         fila = crea_linea(linea4)
         if fila:
             datos.append({'linea': fila})
-    
-    #print(datos)
 
     doc.contar(datos)
     crearpdf3(doc, datos)
 
     doc.construir()
+    doc.generar()
 
     pdf = buffer.getvalue()
     buffer.close()

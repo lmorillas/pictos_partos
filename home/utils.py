@@ -3,7 +3,7 @@
 import reportlab
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, inch, A4, landscape, cm
-from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Table, Spacer, Frame, PageTemplate
+from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Table, Spacer, Frame, PageTemplate, PageBreak
 from reportlab.platypus.flowables import HRFlowable, KeepTogether
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
@@ -18,7 +18,9 @@ from reportlab.lib.colors import (
 )
 from reportlab.platypus.flowables import Flowable
 from functools import partial
-#from django.conf import settings
+import os
+BASE_PDF = os.path.dirname(os.path.abspath(__file__)) + '/'
+
 
 
 def fuentes():
@@ -30,6 +32,9 @@ def fuentes():
     pdfmetrics.registerFont(TTFont('Roboto', 'fonts/Roboto-Regular.ttf' ))
           
 
+
+naranja = colors.Color(1, 0.5058823529411764 , 0, 1)
+verde = colors.Color(0, 0.7333333333333333, 0.6549019607843137 , 0.7)
 
 class verticalText(Flowable):
     '''Rotates a text in a table cell.'''
@@ -68,7 +73,7 @@ class Documento(object):
 
         self.src = []
         self.doc = SimpleDocTemplate(fichero, pagesize=_pagesize, 
-            rightMargin=15,leftMargin=3.5*cm,  topMargin=15 ,bottomMargin=15,
+            rightMargin=2*cm,leftMargin=1.5*cm,  topMargin=15 ,bottomMargin=15,
             showBoundary=1)
         # container for the 'Flowable' objects
         #myframe = Frame(self.doc.leftMargin, self.doc.bottomMargin, self.doc.width, self.doc.height, id='framepictos')
@@ -102,7 +107,11 @@ class Documento(object):
     def contar(self, datos):
         self.num_titulos = sum([1 for x in datos if x.get('titulo')])
         self.num_lineas = sum([1 for x in datos if x.get('linea')])
-        self.max_cols = max([len(x.get('linea')) for x in datos if x.get('linea')])
+        lineas = [len(x.get('linea')) for x in datos if x.get('linea')]
+        if lineas:
+            self.max_cols = max(lineas)
+        else:
+            self.max_cols = 1
 
         self.calc_alto_imagen()
   
@@ -115,6 +124,10 @@ class Documento(object):
         self.stylesheet.add(ParagraphStyle(name='titulo', alignment=TA_CENTER, ))
         self.stylesheet.add(ParagraphStyle(name='titulo_imagen', alignment=TA_CENTER, 
         parent = self.stylesheet['Normal'], fontSize=14, fontName='Roboto' ))
+        self.stylesheet.add(ParagraphStyle(name="TituloPortada", parent=self.stylesheet['Title'], fontSize=48, leading=52,
+        textColor=verde))
+        self.stylesheet.add(ParagraphStyle(name="SubtituloPortada", parent=self.stylesheet['Title'], fontSize=24, leading=28,
+        textColor=naranja))
         
     
     def parrafo(self, contenido, estilo = None, size='', add=True):
@@ -173,14 +186,14 @@ class Documento(object):
         print([x.wrap(self.doc.width,self.doc.height)[0] for x in self.elements])
 
     def imagen_max(self):
-        pass    
+        pass        
 
     def quita_espacios(self):
         self.elements = [e for e in self.elements if not isinstance(e, Spacer)]
 
     def construir(self): 
         #self.quita_espacios()      
-        if isinstance(self.elements[-1], Spacer):
+        if self.elements and isinstance(self.elements[-1], Spacer):
             self.elements.pop()
         espacios = [e for e in self.elements if isinstance(e, Spacer)]
         #altura = self.doc.height - self.alto - 24
@@ -188,24 +201,32 @@ class Documento(object):
         # altura = 3
         altura = self.calc_altura()
         if espacios:
+            nespacios = len(espacios)
             alto_espacio = int((self.max_alto - altura ) / len(espacios))
+            if nespacios == 1 and alto_espacio > 32:
+                alto_espacio = int(alto_espacio * 0.7)
             # if self.altura_espacio > alto_espacio:
             self.altura_espacio = alto_espacio
 
         for e in espacios:
-            e.height = self.altura_espacio
-        
+            e.height = self.altura_espacio        
         altura = self.calc_altura()
         if altura < self.max_alto*0.90:
             self.elements.insert(0, Spacer(1, int(self.max_alto-altura)/2) )
-        
-        self.doc.build(self.elements, onFirstPage=partial(self._vheader, titulo=self.titulo),
-            onLaterPages=partial(self._vheader, titulo=self.titulo))
     
-    def construir2(self):
-        self.doc.build(self.elements, onFirstPage=self._header_footer, 
-            onLaterPages=self._header_footer)
-
+    def generar(self):
+        self.doc.build(self.elements, onFirstPage=partial(self._vheader,
+            titulo=self.titulo,
+            logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"),
+            onLaterPages=partial(self._vheader, titulo=self.titulo, 
+            logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"))
+            
+    def generar_tapa(self):
+        self.doc.build(self.elements, onFirstPage=partial(self._tapa,
+            logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"),
+            onLaterPages=partial(self._tapa, titulo=self.titulo, 
+            logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"))
+    
     def linea(self, data):
         wim = data[0][0].drawWidth        
         #print('ancho im -> ', wim, data[0][0].drawHeight )
@@ -213,7 +234,7 @@ class Documento(object):
         colWidths = [wim + self.padding_imagenes * 2 ] * len(data)  # imagen + padding
         #print ('col widths -> ', colWidths)
         t=Table([data], colWidths=colWidths,
-        style=[('BOX',(0,0),(-1,-1),0.5,colors.Color(1, 0.5058823529411764 , 0, 1)), #colors.purple),
+        style=[('BOX',(0,0),(-1,-1),0.5, verde), #colors.purple),
            ('ALIGN',(0,0),(-1,-1),'CENTER'),
            ('FONTSIZE', (0,0), (-1,-1), 10),
            #('FONTNAME', (0,0), (-1,0), 'Times-Bold'),
@@ -239,9 +260,65 @@ class Documento(object):
     @staticmethod
     def _vheader(canvas, doc, titulo, logo1=None, logo2=None):
         # Save the state of our canvas so we can draw on it
-        #canvas.setStrokeColor(lightgreen)
+        canvas.setStrokeColor(lightgreen)
         #canvas.setStrokeColorCMYK(1, 31, 0, 0)
-        canvas.setStrokeColorRGB(0, 0.7333333333333333, 0.6549019607843137 , 0.7)
+        #canvas.setStrokeColorRGB(0, 0.7333333333333333, 0.6549019607843137 , 0.7)
+        canvas.setStrokeColor(naranja)
+        canvas.setLineWidth(1)  
+        canvas.saveState()
+        #canvas.setTitle(titulo)
+        canvas.setSubject('Pictopartos')
+        canvas.setAuthor('Matronas y TCAE del H.U.Miguel Servet. Zaragoza')		
+        canvas.setCreator('https://pictopartos.es')
+        canvas.setKeywords(['pictos', 'matronas', 'auxiliares', 'partos', 'arasaac', 'HUMS', 'TCAE'])
+        #canvas.translate(0,doc.height) 
+        canvas.rotate(-90)
+        if logo1:
+            #logo_salud = imagen(settings.STATICFILES_DIRS[0]+'/logos/salud.png', 28)
+            logo_salud = imagen(logo1, 28)
+            logo_salud.drawOn(canvas, -doc.height-doc.topMargin, doc.width + doc.leftMargin + 16 )
+        if logo2:
+            #logo_arasaac = imagen(settings.STATICFILES_DIRS[0]+'/logos/arasaac.png', 28)
+            logo_arasaac = imagen(logo2, 28)
+            logo_arasaac.drawOn(canvas, -doc.topMargin - logo_arasaac.drawWidth,
+                        doc.width + doc.leftMargin + 16 )
+        styles = getSampleStyleSheet()
+        header = Paragraph(titulo, styles['Title'])
+        header2 = Paragraph('Pictopartos - Matronas y TCAE del HUMS. Pictogramas de @araaac', styles['Italic'])
+        w, h = header.wrap(doc.height, doc.leftMargin)
+        header.drawOn(canvas, -doc.height-doc.topMargin , doc.width + doc.leftMargin+24) #doc.leftMargin, doc.height + doc.topMargin - h + 12)
+        w2, h2 = header2.wrap(doc.height, doc.leftMargin)
+        header2.drawOn(canvas, -doc.height-doc.topMargin , doc.width + doc.leftMargin+4) #doc.leftMargin, doc.height + doc.topMargin - h + 12)
+        #hr = HRFlowable(width='100%', thickness=0.2, color=colors.purple)
+        #hr.wrap( doc.height, doc.topMargin )
+        #hr.drawOn(canvas, doc.bottomMargin, -doc.leftMargin )
+        canvas.restoreState()
+
+    @staticmethod
+    def _tapa(canvas, doc, logo1=None, logo2=None):
+        # Save the state of our canvas so we can draw on it
+        canvas.setStrokeColor(naranja)
+        canvas.setLineWidth(1)  
+        canvas.saveState()
+        canvas.setSubject('Pictopartos')
+        canvas.setAuthor('Matronas y TCAE del H.U.Miguel Servet. Zaragoza')		
+        canvas.setCreator('https://pictopartos.es')
+        canvas.setKeywords(['pictos', 'matronas', 'auxiliares', 'partos', 'arasaac', 'HUMS', 'TCAE'])
+        if logo1:
+        #logo_salud = imagen(settings.STATICFILES_DIRS[0]+'/logos/salud.png', 28)
+            logo_salud = imagen(logo1, 52)
+            logo_salud.drawOn(canvas, doc.leftMargin+4 , doc.height + doc.bottomMargin - logo_salud.drawHeight -4 )
+            
+        if logo2:
+        #logo_arasaac = imagen(settings.STATICFILES_DIRS[0]+'/logos/arasaac.png', 28)
+            logo_arasaac = imagen(logo2, 52)
+            logo_arasaac.drawOn(canvas, doc.width + doc.leftMargin - logo_arasaac.drawWidth -4, 
+                    doc.height + doc.bottomMargin - logo_arasaac.drawHeight- 4)
+        canvas.restoreState()
+
+    def _vheaderp(canvas, doc, titulo, logo1=None, logo2=None):
+        # Save the state of our canvas so we can draw on it
+        canvas.setStrokeColor(verde)
         canvas.setLineWidth(1)  
         canvas.saveState()
         canvas.setTitle(titulo)
@@ -249,31 +326,17 @@ class Documento(object):
         canvas.setAuthor('Matronas y TCAE del H.U.Miguel Servet. Zaragoza')		
         canvas.setCreator('https://pictopartos.es')
         canvas.setKeywords(['pictos', 'matronas', 'auxiliares', 'partos', 'arasaac', 'HUMS', 'TCAE'])
-        canvas.translate(0,0) 
-        canvas.rotate(90) 
-        #print ('---> ', dir(doc))
+        
         if logo1:
             #logo_salud = imagen(settings.STATICFILES_DIRS[0]+'/logos/salud.png', 28)
-            logo_salud = imagen(logo1, 28)
-            logo_salud.drawOn(canvas, doc.topMargin, -doc.leftMargin + 28 - 12 )
+            logo_salud = imagen(logo1, 52)
+            logo_salud.drawOn(canvas, doc.rightMargin, doc.height )
         if logo2:
             #logo_arasaac = imagen(settings.STATICFILES_DIRS[0]+'/logos/arasaac.png', 28)
-            logo_arasaac = imagen(logo2, 28)
-            logo_arasaac.drawOn(canvas, doc.height + doc.bottomMargin - logo_arasaac.drawWidth,
-                           -doc.leftMargin + 28 - 12 )
+            logo_arasaac = imagen(logo2, 52)
+            logo_arasaac.drawOn(canvas, doc.width, doc.bottomMargin)
         #canvas.setFont("Courier", 20)
         #canvas.drawCentredString(300, -50, "Encabezado del documento")   
-        styles = getSampleStyleSheet()
-        header = Paragraph(titulo, styles['Title'])
-        header2 = Paragraph('Pictopartos - Matronas y TCAE del HUMS. Pictogramas de @araaac', styles['Normal'])
-        w, h = header.wrap(doc.height, doc.leftMargin)
-        header.drawOn(canvas, 0, -doc.leftMargin+24) #doc.leftMargin, doc.height + doc.topMargin - h + 12)
-        w2, h2 = header2.wrap(doc.height, doc.leftMargin)
-        #print(w2, h2)
-        header2.drawOn(canvas, doc.bottomMargin, -doc.leftMargin+4) #doc.leftMargin, doc.height + doc.topMargin - h + 12)
-        hr = HRFlowable(width='100%', thickness=0.2, color=colors.purple)
-        hr.wrap( doc.height, doc.topMargin )
-        hr.drawOn(canvas, doc.bottomMargin, -doc.leftMargin )
         canvas.restoreState()
 
     def vertical(self):
@@ -281,8 +344,14 @@ class Documento(object):
         titleTemplate_1 = PageTemplate(id='OneCol', frames=titleFrame_1)
         document.addPageTemplates([titleTemplate_1])
 
-    def portada(self, titulo, subtitulo):
-        pass
+    def portada(self, titulo=None, subtitulo=None):
+        _lineas= []
+        _lineas.append(Spacer(1, self.doc.height/2))
+        _lineas.append(Paragraph('Título del cuaderno', self.stylesheet['TituloPortada']))
+        _lineas.append(Paragraph('subtítulo del cuaderno', self.stylesheet['SubtituloPortada']))
+        #_lineas.append(PageBreak())
+        self.elements = _lineas #+ self.elements
+        
     
 def imagen(src, alto=80):   #=1*inch): 
     I = Image(src)
@@ -359,7 +428,6 @@ if __name__ == '__main__':
 
     fuentes()
     import listado
-    reload(listado)
 
     doc = Documento()
     #doc.parrafo('Pictopartos para la comunicación', 'Title')
@@ -367,6 +435,7 @@ if __name__ == '__main__':
     doc.titulo = "Documento de tests"
     wfilas = {2: 150, 3: 134, 4: 80}
     wwcols = {2: 300, 3: 200, 4: 160, 5: 120}
+    datos = listado.cosa0
     
     '''
     nfilas = 4
@@ -389,11 +458,12 @@ if __name__ == '__main__':
 
     #doc.espacio(alto = espacio_sup)
     '''
+    datos = listado.cosa0
     doc.contar(datos)
-    crearpdf3(doc, listado.cosa)
-    
-    
-    #doc.construir()
+    crearpdf3(doc, datos)
+    doc.elements=[]
+    doc.portada()
+    doc.generar()   
 
     
  

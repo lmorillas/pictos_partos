@@ -65,16 +65,21 @@ class RotatedPara(Paragraph):
 
 
 class Documento(object):
-    def __init__(self, orientacion='landscape', fichero='pictos.pdf'):
+    def __init__(self, orientacion='landscape', fichero='pictos.pdf', compression=None):
         if orientacion == 'landscape':
             _pagesize = pagesize=landscape(A4)
         else:
             _pagesize = A4
 
         self.src = []
+        self.author = 'Matronas y TCAE del H.U.Miguel Servet. Zaragoza'
+        self.subject('Pictopartos')
+        self.creator('https://pictopartos.es')
+        self.eywords(['pictos', 'matronas', 'auxiliares', 'partos', 'arasaac', 'HUMS', 'TCAE'])
+
         self.doc = SimpleDocTemplate(fichero, pagesize=_pagesize, 
             rightMargin=2*cm,leftMargin=1.5*cm,  topMargin=15 ,bottomMargin=15,
-            showBoundary=1)
+            showBoundary=1, pageCompression=compression)
         # container for the 'Flowable' objects
         #myframe = Frame(self.doc.leftMargin, self.doc.bottomMargin, self.doc.width, self.doc.height, id='framepictos')
         #paginaTemplate = PageTemplate(id='Pagina', frames=[myframe]) #, onPage=self.add_default_info)

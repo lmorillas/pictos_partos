@@ -142,7 +142,7 @@ def limpia_punto(cadena):
 def generar_pdf(hoja):
     buffer = BytesIO()
     fuentes()
-    doc = Documento(fichero=buffer)
+    doc = Documento(fichero=buffer, compression=1)
     doc.titulo = limpia_punto(hoja.title)
     
     linea1 = hoja.linea1.all()

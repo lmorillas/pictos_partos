@@ -18,7 +18,7 @@ from reportlab.lib.colors import (
 )
 from reportlab.platypus.flowables import Flowable
 from functools import partial
-from django.conf import settings
+#from django.conf import settings
 
 
 def fuentes():
@@ -68,7 +68,7 @@ class Documento(object):
 
         self.src = []
         self.doc = SimpleDocTemplate(fichero, pagesize=_pagesize, 
-            rightMargin=18,leftMargin=2.5*cm,  topMargin=15 ,bottomMargin=15,
+            rightMargin=15,leftMargin=3.5*cm,  topMargin=15 ,bottomMargin=15,
             showBoundary=1)
         # container for the 'Flowable' objects
         #myframe = Frame(self.doc.leftMargin, self.doc.bottomMargin, self.doc.width, self.doc.height, id='framepictos')
@@ -236,31 +236,8 @@ class Documento(object):
     def titulo(self, texto):
         self.parrafo(texto, 'Title')
     
-
     @staticmethod
-    def _header_footer(canvas, doc):
-        # Save the state of our canvas so we can draw on it
-        canvas.saveState()
-        styles = getSampleStyleSheet()
-  
-        # Header
-        header = Paragraph('Pictopartos - Proyecto HUMS', styles['Normal'])
-        w, h = header.wrap(doc.width, doc.topMargin)
-        header.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h + 12)
-  
-        # Footer
-        '''
-        footer = Paragraph('This is a multi-line footer.  It goes on every page.   ' * 5, styles['Normal'])
-        w, h = footer.wrap(doc.width, doc.bottomMargin)
-        footer.drawOn(canvas, doc.leftMargin, h)
-        '''
-  
-        # Release the canvas
-        canvas.restoreState()
-
-    
-    @staticmethod
-    def _vheader(canvas, doc, titulo):
+    def _vheader(canvas, doc, titulo, logo1=None, logo2=None):
         # Save the state of our canvas so we can draw on it
         #canvas.setStrokeColor(lightgreen)
         #canvas.setStrokeColorCMYK(1, 31, 0, 0)
@@ -269,22 +246,26 @@ class Documento(object):
         canvas.saveState()
         canvas.setTitle(titulo)
         canvas.setSubject('Pictopartos')
-        canvas.setAuthor('Auxiliares y matronas HUMS')		
+        canvas.setAuthor('Matronas y TCAE del H.U.Miguel Servet. Zaragoza')		
         canvas.setCreator('https://pictopartos.es')
-        canvas.setKeywords(['pictos', 'matronas', 'auxiliares', 'partos', 'arasaac', 'HUMS'])
+        canvas.setKeywords(['pictos', 'matronas', 'auxiliares', 'partos', 'arasaac', 'HUMS', 'TCAE'])
         canvas.translate(0,0) 
         canvas.rotate(90) 
         #print ('---> ', dir(doc))
-        logo_salud = imagen(settings.STATICFILES_DIRS[0]+'/logos/salud.png', 28)
-        logo_arasaac = imagen(settings.STATICFILES_DIRS[0]+'/logos/arasaac.png', 28)
-        logo_salud.drawOn(canvas, doc.topMargin, -doc.leftMargin + 28 - 12 )
-        logo_arasaac.drawOn(canvas, doc.height + doc.bottomMargin - logo_arasaac.drawWidth,
+        if logo1:
+            #logo_salud = imagen(settings.STATICFILES_DIRS[0]+'/logos/salud.png', 28)
+            logo_salud = imagen(logo1, 28)
+            logo_salud.drawOn(canvas, doc.topMargin, -doc.leftMargin + 28 - 12 )
+        if logo2:
+            #logo_arasaac = imagen(settings.STATICFILES_DIRS[0]+'/logos/arasaac.png', 28)
+            logo_arasaac = imagen(logo2, 28)
+            logo_arasaac.drawOn(canvas, doc.height + doc.bottomMargin - logo_arasaac.drawWidth,
                            -doc.leftMargin + 28 - 12 )
         #canvas.setFont("Courier", 20)
         #canvas.drawCentredString(300, -50, "Encabezado del documento")   
         styles = getSampleStyleSheet()
         header = Paragraph(titulo, styles['Title'])
-        header2 = Paragraph('Pictopartos - Auxiliares y matronas del HUMS. Pictogramas de @araaac', styles['Normal'])
+        header2 = Paragraph('Pictopartos - Matronas y TCAE del HUMS. Pictogramas de @araaac', styles['Normal'])
         w, h = header.wrap(doc.height, doc.leftMargin)
         header.drawOn(canvas, 0, -doc.leftMargin+24) #doc.leftMargin, doc.height + doc.topMargin - h + 12)
         w2, h2 = header2.wrap(doc.height, doc.leftMargin)
@@ -299,6 +280,9 @@ class Documento(object):
         titleFrame_1 = Frame(0.5*inch, 0.75*inch, 7*inch, 9*inch, id='col1', showBoundary=0)
         titleTemplate_1 = PageTemplate(id='OneCol', frames=titleFrame_1)
         document.addPageTemplates([titleTemplate_1])
+
+    def portada(self, titulo, subtitulo):
+        pass
     
 def imagen(src, alto=80):   #=1*inch): 
     I = Image(src)

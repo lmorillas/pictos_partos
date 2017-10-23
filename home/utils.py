@@ -203,7 +203,7 @@ class Documento(object):
         if espacios:
             nespacios = len(espacios)
             alto_espacio = int((self.max_alto - altura ) / len(espacios))
-            if nespacios == 1 and alto_espacio > 32:
+            if nespacios < 3 and alto_espacio > 32:
                 alto_espacio = int(alto_espacio * 0.7)
             # if self.altura_espacio > alto_espacio:
             self.altura_espacio = alto_espacio

@@ -27,9 +27,9 @@ def fuentes():
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
     reportlab.rl_config.warnOnMissingFontGlyphs = 1
-    pdfmetrics.registerFont(TTFont('Ubuntu', 'fonts/Ubuntu-R.ttf' ))
-    pdfmetrics.registerFont(TTFont('UbuntuCon', 'fonts/Ubuntu-C.ttf' ))
-    pdfmetrics.registerFont(TTFont('Roboto', 'fonts/Roboto-Regular.ttf' ))
+    #pdfmetrics.registerFont(TTFont('Ubuntu', BASE_PDF + 'fonts/Ubuntu-R.ttf' ))
+    #pdfmetrics.registerFont(TTFont('UbuntuCon', BASE_PDF + 'fonts/Ubuntu-C.ttf' ))
+    pdfmetrics.registerFont(TTFont('Roboto', BASE_PDF + 'fonts/Roboto-Regular.ttf' ))
           
 
 
@@ -220,7 +220,7 @@ class Documento(object):
             logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"),
             onLaterPages=partial(self._vheader, titulo=self.titulo, 
             logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"))
-            
+
     def generar_tapa(self):
         self.doc.build(self.elements, onFirstPage=partial(self._tapa,
             logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"),

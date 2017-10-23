@@ -266,7 +266,7 @@ class Documento(object):
         canvas.setStrokeColor(naranja)
         canvas.setLineWidth(1)  
         canvas.saveState()
-        #canvas.setTitle(titulo)
+        canvas.setTitle(titulo)
         canvas.setSubject('Pictopartos')
         canvas.setAuthor('Matronas y TCAE del H.U.Miguel Servet. Zaragoza')		
         canvas.setCreator('https://pictopartos.es')

@@ -219,7 +219,6 @@ class Documento(object):
             e.height = self.altura_espacio        
         altura = self.calc_altura()
         if altura < self.max_alto*0.95:
-            print('inserto espacio de ', int(self.max_alto-altura)/2)
             self.elements.insert(0, Spacer(1, int(self.max_alto-altura)/2) )
     
     def generar(self):

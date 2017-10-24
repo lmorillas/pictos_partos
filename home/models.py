@@ -186,7 +186,6 @@ def generar_pdf(hoja):
     buffer.close()
     return pdf
 
-
 class PaginaDePictos(Page):
     cuaderno = ParentalManyToManyField('Cuaderno', blank=True,
         help_text="Selecciona el cuaderno o cuadernos en que debe de aparecer")
@@ -199,10 +198,16 @@ class PaginaDePictos(Page):
     observaciones = RichTextField(blank=True)
     generarpdf = models.BooleanField("Generar pdf", default=True)
 
+    '''
     def serve(self, request):
         if "format" in request.GET:
             if request.GET['format'] == 'pdf':
-                pdf = generar_pdf(self)
+                if self.generarpdf:
+                    open('{}{}.pdf'.format(ruta_pdf, self.slug), 'wb').write(generar_pdf(self))
+                    self.generarpdf = False
+                    self.save()
+                
+
                 response = HttpResponse(content_type='application/pdf')
                 response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(self.slug)
                 response.write(pdf)
@@ -214,6 +219,7 @@ class PaginaDePictos(Page):
         else:
             # Display event page as usual
             return super(PaginaDePictos, self).serve(request)
+    '''
 
     search_fields = Page.search_fields + [ # Inherit search_fields from Page
         index.RelatedFields('linea1', [

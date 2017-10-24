@@ -48,8 +48,8 @@ class HomePage(Page):
         context = super(HomePage, self).get_context(request)
 
         # Add extra variables and return the updated context
-        context['paginas'] = PaginaDePictos.objects.live()
-        
+        context['paginas'] = PaginaDePictos.objects.live().order_by('title')
+    
         return context
     content_panels = Page.content_panels + [
         StreamFieldPanel('carousel'),

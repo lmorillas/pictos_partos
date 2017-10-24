@@ -209,7 +209,7 @@ class Documento(object):
         altura = self.calc_altura()
         if espacios:
             nespacios = len(espacios)
-            alto_espacio = int((self.max_alto - altura ) / len(espacios))
+            alto_espacio = int((self.max_alto - altura ) / nespacios)
             if nespacios < 3 and alto_espacio > 32:
                 alto_espacio = int(alto_espacio * 0.7)
             # if self.altura_espacio > alto_espacio:
@@ -218,7 +218,8 @@ class Documento(object):
         for e in espacios:
             e.height = self.altura_espacio        
         altura = self.calc_altura()
-        if altura < self.max_alto*0.90:
+        if altura < self.max_alto*0.95:
+            print('inserto espacio de ', int(self.max_alto-altura)/2)
             self.elements.insert(0, Spacer(1, int(self.max_alto-altura)/2) )
     
     def generar(self):
@@ -378,7 +379,7 @@ def parrafo(estilo, texto='''Texto de la imagen'''):
     #print ('Parrafo -> ', P.wrap(90,12))
     return P
 
-def crearpdf3(doc, djson):
+def crearpdf3x(doc, djson):
     doc.contar(djson)
     
     #doc.ancho_imagen = 85
@@ -444,33 +445,12 @@ if __name__ == '__main__':
     wfilas = {2: 150, 3: 134, 4: 80}
     wwcols = {2: 300, 3: 200, 4: 160, 5: 120}
     datos = listado.cosa0
-    
-    '''
-    nfilas = 4
-    ncols = 5
-
-    w1 = wfilas[nfilas]
-    w2 = wwcols[ncols]
-    if w1 < w2:
-        w = w1
-    else: 
-        w = w2
-    
-    espacio_sup = 0
-    if nfilas == 2:
-        espacio_sup = 48
-        espacio_inter= 32
-
-    doc.imagen_w = 90
-
-
-    #doc.espacio(alto = espacio_sup)
-    '''
-    datos = listado.cosa0
+   
+    datos = listado.cosa2l
     doc.contar(datos)
     crearpdf3(doc, datos)
-    doc.elements=[]
-    doc.portada()
+    doc.construir()
+    #doc.portada()
     doc.generar()   
 
     

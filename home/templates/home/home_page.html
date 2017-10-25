@@ -24,14 +24,24 @@
     <h2>Todas las páginas en pdf</h2>
     <p><a href="static/pdf/pictos.pdf">Primer borrador de las páginas</a></p>
                 <h2>Páginas elaboradas</h2>
-                
+                <p class="small"><small><em>Usa las flechas para desplegar cada cuaderno</em></small></p>
+         
 <ul>
-                {% for p in paginas %}
-
-    <li><a href="{% pageurl p %}">{{p.title}}</a></li>
-                    {% endfor %}
+                {% for c in cuadernos %}
+    <li><a data-toggle="collapse" href="#{{c.nombre}}" aria-expanded="false" 
+        aria-controls="{{c.nombre}}">{{c.nombre}} <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></a>
+        <div class="collapse" id="{{c.nombre}}">
+                <ul>
+    {% for p in c.paginas.all %}
+        <li><a href="{% pageurl p %}">{{p.title}}</a></li>
+    {% endfor %}
+    </ul>
+    </div>
+</li>
+    {% endfor %}
 </ul>
-            </div>
+
+           </div>
             <div class="col-md-6">
             <h2>Colaborar</h2>
     <p><a href="/admin/pages/add/home/paginadepictos/3/"><i class="fa fa-plus-square" aria-hidden="true"></i> Añadir más páginas</a>    </p>

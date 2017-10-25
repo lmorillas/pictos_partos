@@ -7,6 +7,7 @@ from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Table, Space
 from reportlab.platypus.flowables import HRFlowable, KeepTogether
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
+from reportlab.platypus.doctemplate import BaseDocTemplate
 
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT, TA_CENTER
@@ -20,6 +21,13 @@ from reportlab.platypus.flowables import Flowable
 from functools import partial
 import os
 BASE_PDF = os.path.dirname(os.path.abspath(__file__)) + '/'
+
+class MiTemplate(BaseDocTemplate):
+    def __init__(self, filename, **kw):
+        frame1 = Frame(2.5*cm , 2.5*cm, 15*cm, 20*cm, id = 'F1')
+        self.allowSplitting = 0
+        BaseDocTemplate.__init__(self, filename, **kw)
+        self.addPageTemplates(PageTemplate('normal', [frame1]))
 
 
 
@@ -65,7 +73,7 @@ class RotatedPara(Paragraph):
 
 
 class Documento(object):
-    def __init__(self, orientacion='landscape', fichero='pictos.pdf', compression=None):
+    def __init__(self, orientacion='landscape', fichero='pictos.pdf', compression=None, texto=False):
         if orientacion == 'landscape':
             _pagesize = pagesize=landscape(A4)
         else:
@@ -79,6 +87,13 @@ class Documento(object):
         self.keywords = ['pictos', 'matronas', 'auxiliares', 'partos', 'arasaac', 'HUMS', 'TCAE']
         '''
 
+        '''
+        if texto:
+            self.doc = MiTemplate(fichero, pagesize=_pagesize,rightMargin=2*cm,
+                leftMargin=1.5*cm,  topMargin=15 ,bottomMargin=15,
+                showBoundary=1, pageCompression=compression)
+        else:
+        '''
         self.doc = SimpleDocTemplate(fichero, pagesize=_pagesize, 
             rightMargin=2*cm,leftMargin=1.5*cm,  topMargin=15 ,bottomMargin=15,
             showBoundary=1, pageCompression=compression)
@@ -131,10 +146,11 @@ class Documento(object):
         self.stylesheet.add(ParagraphStyle(name='titulo', alignment=TA_CENTER, ))
         self.stylesheet.add(ParagraphStyle(name='titulo_imagen', alignment=TA_CENTER, 
         parent = self.stylesheet['Normal'], fontSize=14, fontName='Roboto' ))
-        self.stylesheet.add(ParagraphStyle(name="TituloPortada", parent=self.stylesheet['Title'], fontSize=48, leading=52,
+        self.stylesheet.add(ParagraphStyle(name="TituloPortada", parent=self.stylesheet['Title'], 
+            fontSize=42, leading=52,
         textColor=verde))
-        self.stylesheet.add(ParagraphStyle(name="SubtituloPortada", parent=self.stylesheet['Title'], fontSize=24, leading=28,
-        textColor=naranja))
+        self.stylesheet.add(ParagraphStyle(name="SubtituloPortada", parent=self.stylesheet['Title'], fontSize=20, 
+        leading=28,  textColor=naranja))
         
     
     def parrafo(self, contenido, estilo = None, size='', add=True):
@@ -231,8 +247,7 @@ class Documento(object):
     def generar_tapa(self):
         self.doc.build(self.elements, onFirstPage=partial(self._tapa,
             logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"),
-            onLaterPages=partial(self._tapa, titulo=self.titulo, 
-            logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"))
+           )
     
     def linea(self, data):
         wim = data[0][0].drawWidth        
@@ -261,7 +276,7 @@ class Documento(object):
             
         return t
     
-    def titulo(self, texto):
+    def crea_titulo(self, texto):
         self.parrafo(texto, 'Title')
     
     @staticmethod
@@ -297,9 +312,9 @@ class Documento(object):
         header.drawOn(canvas, -doc.height-doc.topMargin , doc.width + doc.leftMargin+24) #doc.leftMargin, doc.height + doc.topMargin - h + 12)
         w2, h2 = header2.wrap(doc.height, doc.leftMargin)
         header2.drawOn(canvas, -doc.height-doc.topMargin , doc.width + doc.leftMargin+4) #doc.leftMargin, doc.height + doc.topMargin - h + 12)
-        #hr = HRFlowable(width='100%', thickness=0.2, color=colors.purple)
-        #hr.wrap( doc.height, doc.topMargin )
-        #hr.drawOn(canvas, doc.bottomMargin, -doc.leftMargin )
+        hr = HRFlowable(width='100%', thickness=0.2, color=naranja)
+        hr.wrap( doc.height, doc.topMargin )
+        hr.drawOn(canvas, -doc.height-doc.topMargin, doc.width + doc.leftMargin )
         canvas.restoreState()
 
     @staticmethod
@@ -352,14 +367,38 @@ class Documento(object):
         titleTemplate_1 = PageTemplate(id='OneCol', frames=titleFrame_1)
         document.addPageTemplates([titleTemplate_1])
 
-    def portada(self, titulo=None, subtitulo=None):
+    def portada(self, titulo='Título del cuaderno', subtitulo='subtítulo del cuaderno'):
+        encabezado = 'Cuaderno de pictos para la comunicación'
+        espacio = self.doc.height/2 - 36
         _lineas= []
-        _lineas.append(Spacer(1, self.doc.height/2))
-        _lineas.append(Paragraph('Título del cuaderno', self.stylesheet['TituloPortada']))
-        _lineas.append(Paragraph('subtítulo del cuaderno', self.stylesheet['SubtituloPortada']))
+        _lineas.append(Spacer(1, espacio / 2 ))
+        _lineas.append(Paragraph(encabezado, self.stylesheet['Title']))
+        _lineas.append(Spacer(1, espacio / 2 ))
+        _lineas.append(Paragraph(titulo, self.stylesheet['TituloPortada']))
+        _lineas.append(Spacer(1, 32))
+        _lineas.append(Paragraph(subtitulo, self.stylesheet['SubtituloPortada']))
         #_lineas.append(PageBreak())
         self.elements = _lineas #+ self.elements
         
+    def pagina_de_texto(self, texto):
+        frame = Frame(self.doc.leftMargin + 3*cm , self.doc.bottomMargin + 5*cm, 
+                self.doc.width- 6*cm , self.doc.height-8*cm, id='normal',
+                leftPadding=12, bottomPadding=12,  rightPadding=12, topPadding=12 )
+        frame2 = Frame(self.doc.leftMargin , self.doc.bottomMargin, 
+                self.doc.width- 6*cm , 4.5*cm, id='autores',
+                leftPadding=12, bottomPadding=12,  rightPadding=12, topPadding=12 )
+                
+        template = PageTemplate(id='texto', frames=[frame, frame2], 
+            onPage=partial(self._vheader, titulo=self.titulo,
+            logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"))
+
+        self.doc.addPageTemplates([template])
+        self.elements.append(Paragraph('Objetivos', self.stylesheet['Heading2']))
+        for t in texto.split('\n'):
+            p = Paragraph(t, self.stylesheet['Normal'])
+            self.elements.append(p)
+                    
+            
     
 def imagen(src, alto=80):   #=1*inch): 
     I = Image(src)
@@ -440,6 +479,7 @@ if __name__ == '__main__':
     doc = Documento()
     #doc.parrafo('Pictopartos para la comunicación', 'Title')
     #doc.espacio()
+    '''
     doc.titulo = "Documento de tests"
     wfilas = {2: 150, 3: 134, 4: 80}
     wwcols = {2: 300, 3: 200, 4: 160, 5: 120}
@@ -451,6 +491,7 @@ if __name__ == '__main__':
     doc.construir()
     #doc.portada()
     doc.generar()   
+    '''
 
     
  

@@ -48,8 +48,8 @@ class HomePage(Page):
         context = super(HomePage, self).get_context(request)
 
         # Add extra variables and return the updated context
+        context['cuadernos'] = Cuaderno.objects.all().order_by('nombre')
         context['paginas'] = PaginaDePictos.objects.live().order_by('title')
-    
         return context
     content_panels = Page.content_panels + [
         StreamFieldPanel('carousel'),
@@ -103,6 +103,8 @@ class Cuaderno(models.Model):
 
     def __str__(self):
         return self.nombre
+    def paginas(self):
+        return self.paginadepictos_set.live().order_by('title')
 
     class Meta:
         verbose_name_plural = 'Cuadernos'

@@ -773,6 +773,9 @@ span.outline {
   h4.card-title {
     font-size: 14px !important;
   }
+  .col-xs-3 {
+    padding: 3px;
+  }
 }
 
 @media (min-width: 768px) {

@@ -1,8 +1,16 @@
 {% extends "base.html" %}
 {% load wagtailimages_tags wagtailcore_tags %}
 
-
-
+{% block css-extra %}
+<style>
+[data-toggle="collapse"].collapsed .if-not-collapsed {
+  display: none;
+}
+[data-toggle="collapse"]:not(.collapsed) .if-collapsed {
+  display: none;
+}
+</style>
+{% endblock css-extra %}
 {% block content %}
 <div class="container-fluid">
 <div class="col-md-3 col-12">
@@ -28,8 +36,11 @@
          
 <ul>
                 {% for c in cuadernos %}
-    <li><a data-toggle="collapse" href="#Cua{{forloop.counter}}" aria-expanded="false" 
-        aria-controls="Cua{{forloop.counter}}">{{c.nombre}} <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></a>
+    <li><a class="collapsed" data-toggle="collapse" href="#Cua{{forloop.counter}}" aria-expanded="false" 
+        aria-controls="Cua{{forloop.counter}}">{{c.nombre}} 
+        <i class="if-collapsed fa fa-arrow-circle-down" aria-hidden="true"></i>
+        <i class="if-not-collapsed fa fa-arrow-circle-up" aria-hidden="true"></i>
+    </a>
         <div class="collapse" id="Cua{{forloop.counter}}">
                 <ul>
     {% for p in c.paginas.all %}

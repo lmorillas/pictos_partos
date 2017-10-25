@@ -28,9 +28,9 @@
          
 <ul>
                 {% for c in cuadernos %}
-    <li><a data-toggle="collapse" href="#{{c.nombre}}" aria-expanded="false" 
-        aria-controls="{{c.nombre}}">{{c.nombre}} <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></a>
-        <div class="collapse" id="{{c.nombre}}">
+    <li><a data-toggle="collapse" href="#Cua{{forloop.counter}}" aria-expanded="false" 
+        aria-controls="Cua{{forloop.counter}}">{{c.nombre}} <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></a>
+        <div class="collapse" id="Cua{{forloop.counter}}">
                 <ul>
     {% for p in c.paginas.all %}
         <li><a href="{% pageurl p %}">{{p.title}}</a></li>

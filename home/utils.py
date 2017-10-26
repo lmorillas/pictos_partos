@@ -20,6 +20,10 @@ from reportlab.lib.colors import (
 from reportlab.platypus.flowables import Flowable
 from functools import partial
 import os
+
+naranja = colors.Color(1, 0.5058823529411764 , 0, 1)
+verde = colors.Color(0, 0.7333333333333333, 0.6549019607843137 , 0.7)
+
 BASE_PDF = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 class MiTemplate(BaseDocTemplate):
@@ -41,8 +45,6 @@ def fuentes():
           
 
 
-naranja = colors.Color(1, 0.5058823529411764 , 0, 1)
-verde = colors.Color(0, 0.7333333333333333, 0.6549019607843137 , 0.7)
 
 class verticalText(Flowable):
     '''Rotates a text in a table cell.'''
@@ -142,7 +144,7 @@ class Documento(object):
     def get_stylesheet(self):
         self.stylesheet = getSampleStyleSheet()
         self.stylesheet.byName['Normal'].fontName='Roboto'
-
+        #self.stylesheet.byName['OrderedList'].fontName='Roboto'
         self.stylesheet.add(ParagraphStyle(name='titulo', alignment=TA_CENTER, ))
         self.stylesheet.add(ParagraphStyle(name='titulo_imagen', alignment=TA_CENTER, 
         parent = self.stylesheet['Normal'], fontSize=14, fontName='Roboto' ))
@@ -151,6 +153,14 @@ class Documento(object):
         textColor=verde))
         self.stylesheet.add(ParagraphStyle(name="SubtituloPortada", parent=self.stylesheet['Title'], fontSize=20, 
         leading=28,  textColor=naranja))
+        self.stylesheet.add(ParagraphStyle(name="EncabezaAutores", parent=self.stylesheet['Normal'], 
+            fontSize=12, spaceAfter=6))
+        self.stylesheet.add(ParagraphStyle(name="Lista", parent=self.stylesheet['Normal'], 
+            bulletColor = verde, bulletFontSize = 12, 
+            bulletAnchor = 'start',
+            bulletIndent = 4, bulletOffsetY = 0, 
+            bulletType = 1, leftIndent = 2, rightIndent = 0, textColor=naranja))
+        
         
     
     def parrafo(self, contenido, estilo = None, size='', add=True):
@@ -197,13 +207,15 @@ class Documento(object):
         else:
             pass
 
-    def calc_altura(self):
-        total = sum([x.wrap(self.doc.width,self.doc.height)[1] for x in self.elements])
-        total += sum(6 for x in self.elements if isinstance(x, Paragraph))
+    def calc_altura(self, elements=None):
+        if not elements:
+            elements = self.elements
+        total = sum([x.wrap(self.doc.width-12,self.doc.height)[1] for x in elements])
+        total += sum(6 for x in elements if isinstance(x, Paragraph))
         return total
 
     def alturas(self):
-        print([x.wrap(self.doc.width,self.doc.height)[1] for x in self.elements])
+        print([x.wrap(self.doc.width-12,self.doc.height)[1] for x in self.elements])
 
     def anchuras(self):
         print([x.wrap(self.doc.width,self.doc.height)[0] for x in self.elements])
@@ -367,9 +379,10 @@ class Documento(object):
         titleTemplate_1 = PageTemplate(id='OneCol', frames=titleFrame_1)
         document.addPageTemplates([titleTemplate_1])
 
-    def portada(self, titulo='Título del cuaderno', subtitulo='subtítulo del cuaderno'):
-        encabezado = 'Cuaderno de pictos para la comunicación'
-        espacio = self.doc.height/2 - 36
+    def portada(self, titulo='Título del cuaderno', subtitulo='subtítulo del cuaderno', 
+            participantes=[]):
+        encabezado = 'Pictogramas para la comunicación. Proyecto de mejora. 2017.'
+        espacio = self.doc.height/2 - 64
         _lineas= []
         _lineas.append(Spacer(1, espacio / 2 ))
         _lineas.append(Paragraph(encabezado, self.stylesheet['Title']))
@@ -377,8 +390,18 @@ class Documento(object):
         _lineas.append(Paragraph(titulo, self.stylesheet['TituloPortada']))
         _lineas.append(Spacer(1, 32))
         _lineas.append(Paragraph(subtitulo, self.stylesheet['SubtituloPortada']))
+        altura = self.calc_altura(_lineas)
+        alto_autores = len(participantes) * 14 + 16
+        alto_espacio = self.doc.height - altura - 12 - alto_autores
+        _lineas.append(Spacer(1, alto_espacio))
+        _lineas.append(Paragraph('Elaborado por:', self.stylesheet['EncabezaAutores']))
+        for p in participantes:
+            _lineas.append(Paragraph(p, self.stylesheet['Lista'], bulletText='•'))
+
         #_lineas.append(PageBreak())
         self.elements = _lineas #+ self.elements
+        
+
         
     def pagina_de_texto(self, texto):
         frame = Frame(self.doc.leftMargin + 3*cm , self.doc.bottomMargin + 5*cm, 

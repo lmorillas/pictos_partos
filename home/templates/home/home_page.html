@@ -28,12 +28,13 @@
                 <a href="" class="hero-cta-link hvr-icon-forward">
                     
                 </a>
-<div class="col-md-6">
+<div class="col-md-7">
     <h2>Todas las páginas en pdf</h2>
     <p><a href="static/pdf/pictos.pdf">Primer borrador de las páginas</a></p>
                 <h2>Páginas elaboradas</h2>
-                <p class="small"><small><em>Usa las flechas para desplegar cada cuaderno</em></small></p>
+                <p class="small"><small><em>Usa las flechas para desplegar cada bloque</em></small></p>
          
+                <h3>Organizadas por cuadernos</h3>
 <ul>
                 {% for c in cuadernos %}
     <li><a class="collapsed" data-toggle="collapse" href="#Cua{{forloop.counter}}" aria-expanded="false" 
@@ -51,9 +52,23 @@
 </li>
     {% endfor %}
 </ul>
+<h3>Todas</h3>
+<a class="collapsed" data-toggle="collapse" href="#Todas" aria-expanded="false" 
+aria-controls="Todas">Listado de páginas 
+<i class="if-collapsed fa fa-arrow-circle-down" aria-hidden="true"></i>
+<i class="if-not-collapsed fa fa-arrow-circle-up" aria-hidden="true"></i>
+</a>
+<div class="collapse" id="Todas">
+        <ul>
+{% for p in paginas %}
+<li><a href="{% pageurl p %}">{{p.title}}</a></li>
+{% endfor %}
+</ul>
+</div>
+
 
            </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
             <h2>Colaborar</h2>
     <p><a href="/admin/pages/add/home/paginadepictos/3/"><i class="fa fa-plus-square" aria-hidden="true"></i> Añadir más páginas</a>    </p>
     </div>

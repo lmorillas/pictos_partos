@@ -19,6 +19,7 @@ from reportlab.lib.colors import (
 )
 from reportlab.platypus.flowables import Flowable
 from functools import partial
+from reportlab.pdfbase.pdfmetrics import registerFontFamily
 import os
 
 naranja = colors.Color(1, 0.5058823529411764 , 0, 1)
@@ -42,6 +43,11 @@ def fuentes():
     #pdfmetrics.registerFont(TTFont('Ubuntu', BASE_PDF + 'fonts/Ubuntu-R.ttf' ))
     #pdfmetrics.registerFont(TTFont('UbuntuCon', BASE_PDF + 'fonts/Ubuntu-C.ttf' ))
     pdfmetrics.registerFont(TTFont('Roboto', BASE_PDF + 'fonts/Roboto-Regular.ttf' ))
+    pdfmetrics.registerFont(TTFont('RobotoBd', BASE_PDF + 'fonts/Roboto-Bold.ttf' ))
+    pdfmetrics.registerFont(TTFont('RobotoIt', BASE_PDF + 'fonts/Roboto-Italic.ttf' ))
+    pdfmetrics.registerFont(TTFont('RobotoBI', BASE_PDF + 'fonts/Roboto-BoldItalic.ttf' ))
+    registerFontFamily('Roboto',normal='Roboto',bold='RobotoBd', 
+        italic='RobotoIt',boldItalic='RobotoBI')
           
 
 
@@ -207,10 +213,12 @@ class Documento(object):
         else:
             pass
 
-    def calc_altura(self, elements=None):
+    def calc_altura(self, elements=None, ancho=None):
+        if not ancho:
+            ancho = self.doc.width-12
         if not elements:
             elements = self.elements
-        total = sum([x.wrap(self.doc.width-12,self.doc.height)[1] for x in elements])
+        total = sum([x.wrap(ancho,self.doc.height)[1] for x in elements])
         total += sum(6 for x in elements if isinstance(x, Paragraph))
         return total
 
@@ -255,6 +263,15 @@ class Documento(object):
             logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"),
             onLaterPages=partial(self._vheader, titulo=self.titulo, 
             logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"))
+    
+    def generarwm(self, wm):
+        print('1 -> ', wm)
+        self.doc.build(self.elements, onFirstPage=partial(self._vheader,
+            titulo=self.titulo, marcadeagua='Coii',
+            logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"),
+            onLaterPages=partial(self._vheader, titulo=self.titulo, 
+            logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"))
+            #water=wm ))
 
     def generar_tapa(self):
         self.doc.build(self.elements, onFirstPage=partial(self._tapa,
@@ -292,7 +309,8 @@ class Documento(object):
         self.parrafo(texto, 'Title')
     
     @staticmethod
-    def _vheader(canvas, doc, titulo, logo1=None, logo2=None):
+    def _vheader(canvas, doc, titulo, logo1=None, logo2=None, marcadeagua=''):
+        print('water en vheader', marcadeagua)
         # Save the state of our canvas so we can draw on it
         #canvas.setStrokeColor(lightgreen)
         canvas.setPageCompression(1)
@@ -327,7 +345,21 @@ class Documento(object):
         hr = HRFlowable(width='100%', thickness=0.2, color=naranja)
         hr.wrap( doc.height, doc.topMargin )
         hr.drawOn(canvas, -doc.height-doc.topMargin, doc.width + doc.leftMargin )
-        canvas.restoreState()
+        
+        if marcadeagua:
+            canvas.rotate(90)
+            canvas.setFont("Courier", 70)
+            canvas.setFillColor(naranja, 0.35)
+            #This next setting with make the text of our 
+            #watermark gray, nice touch for a watermark.
+            #canvas.setFillGray(0.2,0.2)
+            #Set up our watermark document. Our watermark 
+            #will be rotated 45 degrees from the direction 
+            #of our underlying document.
+            canvas.translate(500,100) 
+            canvas.rotate(45) 
+            canvas.drawCentredString(50, 200, marcadeagua) 
+        canvas.restoreState()    
 
     @staticmethod
     def _tapa(canvas, doc, logo1=None, logo2=None):
@@ -404,19 +436,22 @@ class Documento(object):
 
         
     def pagina_de_texto(self, texto):
-        frame = Frame(self.doc.leftMargin + 3*cm , self.doc.bottomMargin + 5*cm, 
-                self.doc.width- 6*cm , self.doc.height-8*cm, id='normal',
+        frame = Frame(self.doc.leftMargin + 3*cm , self.doc.bottomMargin + 7*cm, 
+                self.doc.width- 6*cm , 12*cm, id='normal',
                 leftPadding=12, bottomPadding=12,  rightPadding=12, topPadding=12 )
-        frame2 = Frame(self.doc.leftMargin , self.doc.bottomMargin, 
-                self.doc.width- 6*cm , 4.5*cm, id='autores',
+        frame2 = Frame(self.doc.leftMargin +3*cm, self.doc.bottomMargin, 
+                self.doc.width- 6*cm , 6 *cm, id='autores',
                 leftPadding=12, bottomPadding=12,  rightPadding=12, topPadding=12 )
                 
         template = PageTemplate(id='texto', frames=[frame, frame2], 
             onPage=partial(self._vheader, titulo=self.titulo,
-            logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"))
+            logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png",
+            marcadeagua="Paritorio H.U.M.S."))
 
         self.doc.addPageTemplates([template])
-        self.elements.append(Paragraph('Objetivos', self.stylesheet['Heading2']))
+        self.elements.append(Paragraph('Nuestras metas', self.stylesheet['Heading2']))
+        estilo_texto = self.stylesheet['Normal']
+        estilo_texto.spaceAfter = 6
         for t in texto.split('\n'):
             p = Paragraph(t, self.stylesheet['Normal'])
             self.elements.append(p)
@@ -513,6 +548,7 @@ if __name__ == '__main__':
     crearpdf3(doc, datos)
     doc.construir()
     #doc.portada()
+
     doc.generar()   
     '''
 

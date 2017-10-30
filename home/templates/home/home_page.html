@@ -29,8 +29,12 @@
                     
                 </a>
 <div class="col-md-7">
-    <h2>Todas las páginas en pdf</h2>
-    <p><a href="static/pdf/pictos.pdf">Primer borrador de las páginas</a></p>
+    <h2>Versión inicial de los cuadernos</h2>
+    <ul>
+    {% for c in cuadernos%}
+        <li><a href="static/documentos/Cuaderno {{c.nombre}}.pdf">{{c.nombre}}</a></li>
+    {% endfor %}
+    </ul>
                 <h2>Páginas elaboradas</h2>
                 <p class="small"><small><em>Usa las flechas para desplegar cada bloque</em></small></p>
          
@@ -52,7 +56,7 @@
 </li>
     {% endfor %}
 </ul>
-<h3>Todas</h3>
+<h3 class="small">Todas las páginas</h3>
 <a class="collapsed" data-toggle="collapse" href="#Todas" aria-expanded="false" 
 aria-controls="Todas">Listado de páginas 
 <i class="if-collapsed fa fa-arrow-circle-down" aria-hidden="true"></i>
@@ -69,6 +73,8 @@ aria-controls="Todas">Listado de páginas
 
            </div>
             <div class="col-md-5">
+                    <h3 class="small">Todas las páginas en pdf</h3>
+                    <p><a href="static/pdf/pictos.pdf">Primer borrador de las páginas</a></p>
             <h2>Colaborar</h2>
     <p><a href="/admin/pages/add/home/paginadepictos/3/"><i class="fa fa-plus-square" aria-hidden="true"></i> Añadir más páginas</a>    </p>
     </div>

@@ -188,6 +188,9 @@ def generar_pdf(hoja):
     buffer.close()
     return pdf
 
+class PaginaCuadernos(Page):
+    pass
+    
 class PaginaDePictos(Page):
     cuaderno = ParentalManyToManyField('Cuaderno', blank=True,
         help_text="Selecciona el cuaderno o cuadernos en que debe de aparecer")

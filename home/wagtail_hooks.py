@@ -7,7 +7,7 @@ from .models import PaginaDePictos
 from .models import generar_pdf
 from django.conf import settings
 
-ruta_pdf = settings.STATIC_ROOT + '/pdf/'
+ruta_pdf = settings.STATIC_ROOT + '/pdf/pictos/'
 
 @hooks.register('after_create_page')
 @hooks.register('after_edit_page')

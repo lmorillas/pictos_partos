@@ -9,6 +9,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from reportlab.platypus.doctemplate import BaseDocTemplate
 
+
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT, TA_CENTER
 from reportlab.lib.colors import (
@@ -49,8 +50,6 @@ def fuentes():
     registerFontFamily('Roboto',normal='Roboto',bold='RobotoBd', 
         italic='RobotoIt',boldItalic='RobotoBI')
           
-
-
 
 class verticalText(Flowable):
     '''Rotates a text in a table cell.'''
@@ -265,9 +264,9 @@ class Documento(object):
             logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"))
     
     def generarwm(self, wm):
-        print('1 -> ', wm)
+        #print('1 -> ', wm)
         self.doc.build(self.elements, onFirstPage=partial(self._vheader,
-            titulo=self.titulo, marcadeagua='Coii',
+            titulo=self.titulo, marcadeagua='',
             logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"),
             onLaterPages=partial(self._vheader, titulo=self.titulo, 
             logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png"))
@@ -310,7 +309,7 @@ class Documento(object):
     
     @staticmethod
     def _vheader(canvas, doc, titulo, logo1=None, logo2=None, marcadeagua=''):
-        print('water en vheader', marcadeagua)
+        #print('water en vheader', marcadeagua)
         # Save the state of our canvas so we can draw on it
         #canvas.setStrokeColor(lightgreen)
         canvas.setPageCompression(1)
@@ -347,9 +346,10 @@ class Documento(object):
         hr.drawOn(canvas, -doc.height-doc.topMargin, doc.width + doc.leftMargin )
         
         if marcadeagua:
+            #print ('EStoy letra a 50')
             canvas.rotate(90)
-            canvas.setFont("Courier", 70)
-            canvas.setFillColor(naranja, 0.35)
+            canvas.setFont("Courier-Bold", 46)
+            canvas.setFillColor(naranja, 0.25)
             #This next setting with make the text of our 
             #watermark gray, nice touch for a watermark.
             #canvas.setFillGray(0.2,0.2)
@@ -357,8 +357,8 @@ class Documento(object):
             #will be rotated 45 degrees from the direction 
             #of our underlying document.
             canvas.translate(500,100) 
-            canvas.rotate(45) 
-            canvas.drawCentredString(50, 200, marcadeagua) 
+            canvas.rotate(35) 
+            canvas.drawCentredString(45, 200, marcadeagua) 
         canvas.restoreState()    
 
     @staticmethod
@@ -437,7 +437,7 @@ class Documento(object):
         
     def pagina_de_texto(self, texto):
         frame = Frame(self.doc.leftMargin + 3*cm , self.doc.bottomMargin + 7*cm, 
-                self.doc.width- 6*cm , 12*cm, id='normal',
+                self.doc.width- 6*cm , 12.5*cm, id='normal',
                 leftPadding=12, bottomPadding=12,  rightPadding=12, topPadding=12 )
         frame2 = Frame(self.doc.leftMargin +3*cm, self.doc.bottomMargin, 
                 self.doc.width- 6*cm , 6 *cm, id='autores',
@@ -446,7 +446,7 @@ class Documento(object):
         template = PageTemplate(id='texto', frames=[frame, frame2], 
             onPage=partial(self._vheader, titulo=self.titulo,
             logo1=BASE_PDF + "logos/salud.png", logo2=BASE_PDF + "logos/arasaac.png",
-            marcadeagua="Paritorio H.U.M.S."))
+            marcadeagua="Servicio de Obstetricia H.U.M.S."))
 
         self.doc.addPageTemplates([template])
         self.elements.append(Paragraph('Nuestras metas', self.stylesheet['Heading2']))

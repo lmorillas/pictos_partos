@@ -36,7 +36,7 @@ Está formado por láminas con pictogramas. Cada cuaderno tiene una estructura d
 
 <i>Servicio de Obstetricia H.U.M.S. 2017 (Versión 0.1)</i>'''
 
-condiciones = '''Los pictogramas de <b>arasaac</b> (ver http://blog.arasaac.org/p/condiciones-de-uso_19.html)con son propiedad del Gobierno de Aragón (España).
+condiciones = '''Los pictogramas de <b>arasaac</b> (ver <u><a href=http://blog.arasaac.org/p/condiciones-de-uso_19.html>http://blog.arasaac.org/p/condiciones-de-uso_19.html</a></u>)con son propiedad del Gobierno de Aragón (España).
  Sus recursos se publican bajo Licencia Creative Commons (BY-NC-SA).'''
 
 materiales = '''Nuestros materiales, como <b>Proyecto de Mejora de la Calidad del H.U.M.S</b>, están

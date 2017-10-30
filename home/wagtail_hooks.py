@@ -5,9 +5,11 @@ from wagtail.wagtailcore import hooks
 
 from .models import PaginaDePictos
 from .models import generar_pdf
+from .crea_cuadernos import crea_cuaderno
 from django.conf import settings
 
-ruta_pdf = settings.STATIC_ROOT + '/pdf/pictos/'
+ruta_pdf = settings.STATIC_ROOT + '/pdf/'
+ruta_doc = settings.STATIC_ROOT + '/documentos/'
 
 @hooks.register('after_create_page')
 @hooks.register('after_edit_page')
@@ -16,6 +18,11 @@ def do_after_edit_page(request, page):
     if (isinstance, page, PaginaDePictos):
         #print('Creando ... {}{}.pdf'.format(ruta_pdf, page.slug))
         open('{}{}.pdf'.format(ruta_pdf, page.slug), 'wb').write(generar_pdf(page))
+        for c in page.cuaderno.all():
+            listapdf = [n.slug for n in  c.paginadepictos_set.all()]
+            doc = crea_cuaderno(c.nombre, listapdf, ruta = settings.STATIC_ROOT , generar=False)
+            open('{}Cuaderno_{}.pdf'.format(ruta_doc, c.nombre), 'wb').write(doc)
+
 
 
 '''

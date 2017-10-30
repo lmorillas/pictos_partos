@@ -113,7 +113,7 @@ from io import BytesIO
 from .utils import Documento, fuentes, parrafo, imagen, crearpdf3
 from django.conf import settings
 ruta_imagen = settings.STATICFILES_DIRS[0] + '/images/'
-ruta_pdf = settings.STATICFILES_DIRS[0] + '/pdfs/'
+ruta_pdf = settings.STATICFILES_DIRS[0] + '/pdf/'
 
 
 def crea_linea(linea):
@@ -140,6 +140,9 @@ def limpia_punto(cadena):
         return cadena[:-1]
     else:
         return cadena
+
+def generar_cuaderno(hoja):
+    pass
 
 def generar_pdf(hoja):
     buffer = BytesIO()
@@ -190,7 +193,7 @@ def generar_pdf(hoja):
 
 class PaginaCuadernos(Page):
     pass
-    
+
 class PaginaDePictos(Page):
     cuaderno = ParentalManyToManyField('Cuaderno', blank=True,
         help_text="Selecciona el cuaderno o cuadernos en que debe de aparecer")

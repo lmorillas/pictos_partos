@@ -9,17 +9,18 @@ https://stackoverflow.com/questions/2574676/change-metadata-of-pdf-file-with-pyp
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from PyPDF2.generic import NameObject, createStringObject
 
-BASE_PDF = 'pdfs/'
-BASE_PDF_TAPA = 'pdfs/'
-DESTINO_CUADERNO= ''
+BASE_PDF = '/pdf/'
+BASE_PDF_TAPA = '/documentos/'
+
+from io import BytesIO
 
 def crea_nombre_pdf(titulo):
     return titulo + 'pdf'
 
-def crea_cuaderno(nombre, tapa, listapdf):
-    fins = [PdfFileReader(BASE_PDF+i) for i in listapdf]
-    tapa = PdfFileReader(BASE_PDF + 'tapa_' + nombre.lower() + '.pdf')
-    objetivos = PdfFileReader(BASE_PDF+'objetivos.pdf')
+def crea_cuaderno(nombre, listapdf, ruta='', generar=True):
+    fins = [PdfFileReader(ruta+'/pdf/' + i+'.pdf') for i in listapdf]
+    tapa = PdfFileReader(ruta +'/documentos/' + 'tapa_' + nombre.lower() + '.pdf')
+    objetivos = PdfFileReader(ruta +'/documentos/'+'objetivos.pdf')
 
     # gestión metadatos
     info_old = fins[0].getDocumentInfo()
@@ -43,10 +44,18 @@ def crea_cuaderno(nombre, tapa, listapdf):
     for i in fins:
         fo.addPage(i.getPage(0))
 
-    fo.write(open(DESTINO_CUADERNO  +  'Cuaderno ' + nombre + '.pdf', 'wb'))
+    if generar:
+        fo.write(open(ruta + 'documentos/Cuaderno ' + nombre + '.pdf', 'wb'))
+    else:
+        buffer = BytesIO()
+        fo.write(buffer)
+        pdf = buffer.getvalue()
+        buffer.close()
+        return pdf
+        
 
 if __name__ == '__main__':
     from home.models import Cuaderno
     c = Cuaderno.objects.all()[0]
-    lista = [n.slug+'.pdf' for n in  c.paginadepictos_set.all()]
-    crea_cuaderno(c.nombre, 'objetivos.pdf', lista)
+    lista = [n.slug for n in  c.paginadepictos_set.all()]
+    crea_cuaderno(c.nombre, lista, ruta=BASE_PDF_TAPA)

@@ -27,6 +27,7 @@ naranja = colors.Color(1, 0.5058823529411764 , 0, 1)
 verde = colors.Color(0, 0.7333333333333333, 0.6549019607843137 , 0.7)
 
 BASE_PDF = os.path.dirname(os.path.abspath(__file__)) + '/'
+BASE_DOC = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 class MiTemplate(BaseDocTemplate):
     def __init__(self, filename, **kw):

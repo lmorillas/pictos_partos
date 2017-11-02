@@ -19,9 +19,9 @@ def do_after_edit_page(request, page):
         #print('Creando ... {}{}.pdf'.format(ruta_pdf, page.slug))
         open('{}{}.pdf'.format(ruta_pdf, page.slug), 'wb').write(generar_pdf(page))
         for c in page.cuaderno.all():
-            listapdf = [n.slug for n in  c.paginadepictos_set.all()]
+            listapdf = [n.slug for n in  c.paginadepictos_set.all().order_by('title')]
             doc = crea_cuaderno(c.nombre, listapdf, ruta = settings.STATIC_ROOT , generar=False)
-            open('{}Cuaderno_{}.pdf'.format(ruta_doc, c.nombre), 'wb').write(doc)
+            open('{}Cuaderno {}.pdf'.format(ruta_doc, c.nombre), 'wb').write(doc)
 
 
 

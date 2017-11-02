@@ -27,7 +27,7 @@ naranja = colors.Color(1, 0.5058823529411764 , 0, 1)
 verde = colors.Color(0, 0.7333333333333333, 0.6549019607843137 , 0.7)
 
 BASE_PDF = os.path.dirname(os.path.abspath(__file__)) + '/'
-BASE_DOC = os.path.dirname(os.path.abspath(__file__)) + '/'
+#BASE_DOC = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 class MiTemplate(BaseDocTemplate):
     def __init__(self, filename, **kw):
@@ -151,7 +151,8 @@ class Documento(object):
         self.stylesheet = getSampleStyleSheet()
         self.stylesheet.byName['Normal'].fontName='Roboto'
         #self.stylesheet.byName['OrderedList'].fontName='Roboto'
-        self.stylesheet.add(ParagraphStyle(name='titulo', alignment=TA_CENTER, ))
+        self.stylesheet.add(ParagraphStyle(name='titulo', alignment=TA_CENTER,
+         parent = self.stylesheet['Normal'], fontSize=18, leading=24 ))
         self.stylesheet.add(ParagraphStyle(name='titulo_imagen', alignment=TA_CENTER, 
         parent = self.stylesheet['Normal'], fontSize=14, fontName='Roboto' ))
         self.stylesheet.add(ParagraphStyle(name="TituloPortada", parent=self.stylesheet['Title'], 
@@ -456,6 +457,20 @@ class Documento(object):
         for t in texto.split('\n'):
             p = Paragraph(t, self.stylesheet['Normal'])
             self.elements.append(p)
+
+    def pagina_mejoras(self):
+        self.titulo = 'Observaciones y mejoras'
+        self.elements.append(Paragraph('Observaciones y mejoras', 
+            self.stylesheet['titulo']))
+        self.elements.append(Paragraph('<para align="center"><i>Espacio para anotar lo que pienses que no funciona bien o que se puede mejorar.</i></para>',
+            self.stylesheet['Normal']))
+        self.elements.append(HRFlowable())
+        self.elements.append(Spacer(10, 36))
+        for x in range(18):
+            self.elements.append(HRFlowable())
+            self.elements.append(Spacer(10, 24))
+        self.elements.pop()
+
                     
             
     

@@ -21,6 +21,7 @@ def crea_cuaderno(nombre, listapdf, ruta='', generar=True):
     fins = [PdfFileReader(ruta+'/pdf/' + i+'.pdf') for i in listapdf]
     tapa = PdfFileReader(ruta +'/documentos/' + 'tapa_' + nombre.lower() + '.pdf')
     objetivos = PdfFileReader(ruta +'/documentos/'+'objetivos.pdf')
+    observaciones = PdfFileReader(ruta +'/documentos/'+'observaciones.pdf')
 
     # gestión metadatos
     info_old = fins[0].getDocumentInfo()
@@ -43,6 +44,9 @@ def crea_cuaderno(nombre, listapdf, ruta='', generar=True):
 
     for i in fins:
         fo.addPage(i.getPage(0))
+
+    fo.addPage(observaciones.getPage(0))
+    fo.addPage(observaciones.getPage(0))
 
     if generar:
         fo.write(open(ruta + 'documentos/Cuaderno ' + nombre + '.pdf', 'wb'))

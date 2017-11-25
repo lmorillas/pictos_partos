@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'cuser',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -156,3 +157,5 @@ CACHES = {
         }
     }
 }
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

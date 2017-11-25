@@ -15,7 +15,8 @@ ruta_doc = settings.STATIC_ROOT + '/documentos/'
 @hooks.register('after_edit_page')
 def do_after_edit_page(request, page):
     # Use a custom create view for the AwesomePage model
-    if (isinstance, page, PaginaDePictos):
+    
+    if isinstance (page, PaginaDePictos):
         #print('Creando ... {}{}.pdf'.format(ruta_pdf, page.slug))
         open('{}{}.pdf'.format(ruta_pdf, page.slug), 'wb').write(generar_pdf(page))
         for c in page.cuaderno.all():

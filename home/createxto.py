@@ -31,12 +31,12 @@ La comunicación entre la madre y el equipo que la atiende  (matrona, TCAE y toc
 No sólo se pretende que  las pacientes entiendan lo que el personal sanitario quiere transmitir. Es indispensable que los profesionales comprendan lo que la paciente puede necesitar y lo que quiera comunicar al equipo sanitario. 
 Para que todo esto pueda llevarse a cabo, se utilizará como herramienta de comunicación un método alternativo al lenguaje oral: comunicación aumentativa, en forma de pictogramas. 
 Será también útil en la atención a las mujeres con problemas cognitivos, o de audición, cuando lleguen a nuestro servicio. 
-Este cuaderno tiene como objetivo eliminar las dificultades de comunicación entre la paciente y su acompañante con el equipo sanitario a lo largo de todo el ingreso en el servicio de dilatación del HUMS, aumentando el confort y la seguridad en el parto. 
+Este cuaderno tiene como objetivo eliminar las dificultades de comunicación entre la paciente y su acompañante con el equipo sanitario a lo largo de todo el ingreso en el Servicio de Obstetricia del HUMS, aumentando el confort y la seguridad en el parto y puerperio. 
 Está formado por láminas con pictogramas. Cada cuaderno tiene una estructura diferente, según las necesidades que vemos los profesionales en cada parte del Servicio de Obstetricia.
 
 <i>Servicio de Obstetricia H.U.M.S. 2017 (Versión 0.1)</i>'''
 
-condiciones = '''Los pictogramas de <b>arasaac</b> (ver <u><a href=http://blog.arasaac.org/p/condiciones-de-uso_19.html>http://blog.arasaac.org/p/condiciones-de-uso_19.html</a></u>) son propiedad del Gobierno de Aragón (España).
+condiciones = '''Los pictogramas de <b>arasaac</b> (ver <u><a href=http://blog.arasaac.org/p/condiciones-de-uso_19.html>http://blog.arasaac.org/p/condiciones-de-uso_19.html</a></u>) son propiedad del Gobierno de Aragón.
  Sus recursos se publican bajo Licencia Creative Commons (BY-NC-SA).'''
 
 materiales = '''Nuestros materiales, como <b>Proyecto de Mejora de la Calidad del H.U.M.S</b>, están

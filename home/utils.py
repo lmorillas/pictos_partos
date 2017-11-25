@@ -338,7 +338,7 @@ class Documento(object):
                         doc.width + doc.leftMargin + 16 )
         styles = getSampleStyleSheet()
         header = Paragraph(titulo, styles['Title'])
-        header2 = Paragraph('Pictopartos - Matronas y TCAE del HUMS. Pictogramas de @araaac', styles['Italic'])
+        header2 = Paragraph('Pictopartos - Matronas y TCAE del HUMS. Pictogramas de @arasaac', styles['Italic'])
         w, h = header.wrap(doc.height, doc.leftMargin)
         header.drawOn(canvas, -doc.height-doc.topMargin , doc.width + doc.leftMargin+24) #doc.leftMargin, doc.height + doc.topMargin - h + 12)
         w2, h2 = header2.wrap(doc.height, doc.leftMargin)

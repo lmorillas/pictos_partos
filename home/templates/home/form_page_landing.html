@@ -2,7 +2,16 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
-{% include "home/include/header-hero.html" %}
+<div class="container">
+        <div class="row">
+            <div class="text-center">
+                <h1>{{ page.title }}</h1>
+                {% if page.subtitle %}
+                    <p class="stand-first">{{ page.subtitle }}</p>
+                {% endif %}
+            </div>
+        </div>
+</div>
 
 <div class="container form-page-thanks">
     <div class="row">

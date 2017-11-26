@@ -56,6 +56,9 @@ INSTALLED_APPS = [
     'crispy_forms',
     'captcha',
     'wagtailcaptcha',
+    'wagtail.contrib.modeladmin',
+    'wagtailmenus',
+    
 ]
 
 MIDDLEWARE = [
@@ -87,6 +90,12 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'wagtail.contrib.settings.context_processors.settings',
+                'wagtailmenus.context_processors.wagtailmenus',
             ],
         },
     },
@@ -161,7 +170,3 @@ CACHES = {
 }
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
-
-RECAPTCHA_PRIVATE_KEY = 'xxx'
-RECAPTCHA_PUBLIC_KEY = 'www'
-NOCAPTCHA = True

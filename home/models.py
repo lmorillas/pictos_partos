@@ -343,12 +343,6 @@ class FormField(AbstractFormField):
     """
     page = ParentalKey('FormPage', related_name='form_fields')
 
-from snowpenguin.django.recaptcha2.fields import ReCaptchaField
-from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
-
-class ExampleForm(forms.Form):
-    pass
-
 class FormPage(WagtailCaptchaEmailForm):
     
     image = models.ForeignKey(

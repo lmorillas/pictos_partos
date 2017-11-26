@@ -56,6 +56,7 @@ class HomePage(Page):
         StreamFieldPanel('carousel'),
     ]
 
+from wagtailcaptcha.models import WagtailCaptchaEmailForm
 
 
 class ListadoDeImagenes(Page):
@@ -342,8 +343,14 @@ class FormField(AbstractFormField):
     """
     page = ParentalKey('FormPage', related_name='form_fields')
 
+from snowpenguin.django.recaptcha2.fields import ReCaptchaField
+from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 
-class FormPage(AbstractEmailForm):
+class ExampleForm(forms.Form):
+    pass
+
+class FormPage(WagtailCaptchaEmailForm):
+    
     image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -356,7 +363,7 @@ class FormPage(AbstractEmailForm):
 
     # Note how we include the FormField object via an InlinePanel using the
     # related_name value
-    content_panels = AbstractEmailForm.content_panels + [
+    content_panels = WagtailCaptchaEmailForm.content_panels + [
         ImageChooserPanel('image'),
         StreamFieldPanel('body'),
         InlinePanel('form_fields', label="Form fields"),

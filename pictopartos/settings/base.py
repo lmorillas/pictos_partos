@@ -54,6 +54,8 @@ INSTALLED_APPS = [
 
     'cuser',
     'crispy_forms',
+    'captcha',
+    'wagtailcaptcha',
 ]
 
 MIDDLEWARE = [
@@ -159,3 +161,7 @@ CACHES = {
 }
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+RECAPTCHA_PRIVATE_KEY = 'xxx'
+RECAPTCHA_PUBLIC_KEY = 'www'
+NOCAPTCHA = True

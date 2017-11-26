@@ -14,7 +14,6 @@ from wagtail.wagtailadmin.edit_handlers import (
 
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from wagtail.wagtailimages.models import Image
 
 from modelcluster.fields import ParentalKey
 
@@ -32,6 +31,7 @@ from wagtail.wagtailsnippets.models import register_snippet
 from modelcluster.fields import ParentalManyToManyField
 
 from django import forms
+from wagtail.wagtailcore.models import Collection
 
 
 from wagtail.wagtailimages.blocks import ImageChooserBlock
@@ -65,7 +65,8 @@ class ListadoDeImagenes(Page):
     def get_context(self, request):
         # Get the full unpaginated listing of resource pages as a queryset -
         # replace this with your own query as appropriate
-        all_resources = Image.objects.all()
+        ara = Collection.objects.filter(name="Pictogramas Arasaac")
+        all_resources = Image.objects.filter(collection=ara).order_by('title')
 
         paginator = Paginator(all_resources, 24) # Show 5 resources per page
 
